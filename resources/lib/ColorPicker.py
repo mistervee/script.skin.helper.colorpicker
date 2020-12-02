@@ -179,17 +179,9 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
             # load colors in the list
             self.load_colors_palette(self.active_palette)
 
-            # focus the current color
-            if self.current_window.getProperty("colorstring"):
-                self.current_window.setFocusId(3010)
-            else:
-                # no color setup so we just focus the colorslist
-                self.current_window.setFocusId(3110)
-                self.colors_list.selectItem(0)
-                self.current_window.setProperty("colorstring",
-                                                self.colors_list.getSelectedItem().getProperty("colorstring"))
-                self.current_window.setProperty("colorname",
-                                                self.colors_list.getSelectedItem().getLabel())
+            # focus the color list
+            self.current_window.setFocusId(3110)
+            self.colors_list.selectItem(0)
 
             # set opacity slider
             if self.current_window.getProperty("colorstring"):
@@ -236,17 +228,13 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
 
         self.create_color_swatch_image(colorstring)
 
-        if self.skinstring and (not colorstring or colorstring == "None"):
-            xbmc.executebuiltin("Skin.SetString(%s.name, %s)" % (self.skinstring, ADDON.getLocalizedString(32013)))
-            xbmc.executebuiltin("Skin.SetString(%s, None)" % self.skinstring)
-            xbmc.executebuiltin("Skin.Reset(%s.base)" % self.skinstring)
+        if self.skinstring and (not colorstring or colorstring == ""):
+            xbmc.executebuiltin("Skin.Reset(%s.name)" % self.skinstring)
+            xbmc.executebuiltin("Skin.Reset(%s)" % self.skinstring)
 
         elif self.skinstring and colorstring:
             xbmc.executebuiltin("Skin.SetString(%s.name, %s)" % (self.skinstring, colorname))
             xbmc.executebuiltin("Skin.SetString(%s, %s)" % (self.skinstring, colorstring))
-
-            colorbase = "ff" + colorstring[2:]
-            xbmc.executebuiltin("Skin.SetString(%s.base, %s)" % (self.skinstring), colorbase)
 
         elif self.win_property:
             WINDOW.setProperty(self.win_property, colorstring)
